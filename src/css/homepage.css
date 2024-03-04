@@ -1,0 +1,45 @@
+#home-page-header {
+    text-align: center;
+}
+
+#home-page {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.block-homepage img {
+    max-width: 100px;
+    max-height: 320px;
+}
+
+.block-homepage {
+    border: #282c34 solid 1px;
+    padding: 15px;
+    display: flex;
+    gap: 30px;
+    width: 40%;
+    border-radius: 30px;
+    margin-left: 5%;
+    margin-top: 20px;
+}
+
+.block-homepage p {
+    text-align: right;
+    padding: 15px;
+}
+
+#block-container {
+    display: flex;
+    width: 100%;
+}
+
+#start-home-button {
+    text-decoration: none;
+    color: #282c34;
+    margin: auto;
+    border: #282c34 solid 1px;
+    border-radius: 15px;
+    padding: 15px;
+}
+
