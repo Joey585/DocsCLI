@@ -1,14 +1,19 @@
 import {ChangeEvent, FormEvent, useState} from "react";
+import {useAuth} from "../components/AuthProvider";
+import {APIResponse, UserData} from "../util/BackendAuth";
 
 export const SignIn = () => {
     const [password, setPassword] = useState<string>();
-
+    const auth = useAuth();
     const handleSubmitEvent = (e: FormEvent<HTMLFormElement>) => {
         const passwordOutput = e.currentTarget.children.item(0)!.children.item(2)!;
         e.preventDefault();
         if(password === "") return passwordOutput.innerHTML = "You need to input a password!"
-
-
+        auth.loginAction({password: password}).then((res: APIResponse<UserData | number>) => {
+            if(res.d === 401){
+                return passwordOutput.innerHTML = "Account not found!"
+            }
+        })
     }
 
     const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
