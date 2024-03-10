@@ -3,10 +3,22 @@ export interface APIResponse<T> {
     op: number
 }
 
+export interface SignInResponse {
+    d: {
+        token: string,
+        userData: UserData
+    },
+    op: 1
+}
+
+export interface UserDataResponse {
+    d: UserData | String,
+    op: 0 | 2
+}
+
 export interface UserData {
     username: string,
     email: string,
-    password: string,
     documentID: string,
     placeholders: [{
         name: string,
@@ -16,7 +28,7 @@ export interface UserData {
         connected: boolean,
         refreshToken: string
     },
-    admin?: boolean
+    lastIndexOutput: number
 }
 
 export function isUserData(data: number | UserData): data is UserData {

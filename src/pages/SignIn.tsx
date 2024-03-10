@@ -1,6 +1,7 @@
 import {ChangeEvent, FormEvent, useState} from "react";
 import {useAuth} from "../components/AuthProvider";
 import {APIResponse, UserData} from "../util/BackendAuth";
+import {NavBar} from "../components/NavBar";
 
 export const SignIn = () => {
     const [password, setPassword] = useState<string>();
@@ -22,6 +23,7 @@ export const SignIn = () => {
 
     return(
         <div id="signin-page">
+            <NavBar/>
             <h1>Please sign in using the password given to you below.</h1>
             <h3>If you don't own a password then apply for one <a href="/signup">here</a></h3>
             <form onSubmit={handleSubmitEvent}>

@@ -1,12 +1,13 @@
 import {useContext, createContext, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {APIResponse, isUserData, UserData} from "../util/BackendAuth";
+import {SignInResponse, UserData, UserDataResponse} from "../util/BackendAuth";
 
 interface AuthContextProps {
     token: string;
     user: UserData | null;
     loginAction: (data: any) => Promise<any>;
     logOut: () => void;
+    fetchUser: () => Promise<UserData | null>
 }
 
 const AuthContext = createContext({} as AuthContextProps);
@@ -25,17 +26,40 @@ const AuthProvider = ({children}: any) => {
                 },
                 body: JSON.stringify(data)
             });
-            const res = await response.json() as APIResponse<UserData | number>;
-            if(isUserData(res.d)){
-                setUser(res.d);
-                setToken(res.d.password as string);
-                localStorage.setItem("site", res.d.password);
-                navigate("/account");
-            }
+            const res = await response.json() as SignInResponse;
+            setUser(res.d.userData);
+            setToken(res.d.token);
+            localStorage.setItem("site", res.d.token);
+            navigate("/account");
+
             return res
         } catch (err) {
             console.error(err);
         }
+    }
+
+    const fetchUser = async (): Promise<UserData | null> => {
+        try {
+            const response = await fetch("http://localhost:3001/user/me", {
+                method: "GET",
+                headers: {
+                    "Authorization": token,
+                    "Content-Type": "application/json"
+                }
+            });
+            const res = await response.json() as UserDataResponse;
+
+            if(res.op !== 0){
+                return res.d as UserData;
+            } else {
+                navigate("/login")
+                return null
+            }
+        } catch (err) {
+            console.error(err)
+        }
+
+        return null;
     }
 
     const logOut = () => {
@@ -45,7 +69,7 @@ const AuthProvider = ({children}: any) => {
         navigate("/signin")
     }
 
-    return <AuthContext.Provider value={{token, user, loginAction, logOut}}>{children}</AuthContext.Provider>
+    return <AuthContext.Provider value={{token, user, loginAction, logOut, fetchUser}}>{children}</AuthContext.Provider>
 }
 
 export default AuthProvider;

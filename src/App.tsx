@@ -5,6 +5,7 @@ import {SignIn} from "./pages/SignIn";
 import AuthProvider from "./components/AuthProvider";
 import PrivateRoute from "./components/PrivateRoute";
 import {AdminDash} from "./pages/AdminDash";
+import {Account} from "./pages/Account";
 
 function App() {
   return (
@@ -15,6 +16,9 @@ function App() {
               <Route path="/signin" element={<SignIn/>}/>
               <Route element={<PrivateRoute />}>
                   <Route path="/admin" element={<AdminDash/>}/>
+              </Route>
+              <Route element={<PrivateRoute/>}>
+                  <Route path="/account" element={<Account/>}/>
               </Route>
           </Routes>
       </AuthProvider>
