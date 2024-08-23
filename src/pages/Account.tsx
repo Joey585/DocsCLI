@@ -1,9 +1,10 @@
 import {useAuth} from "../components/AuthProvider";
-import {useEffect, useState} from "react";
+import {ChangeEvent, useEffect, useState} from "react";
 import {UserData} from "../util/BackendAuth";
 export const Account = () => {
     const auth = useAuth();
     const [user, setUser] = useState<UserData | null>(null);
+    const [discordToken, setToken] = useState<string>();
 
     useEffect(() => {
         (async () => {
@@ -24,7 +25,16 @@ export const Account = () => {
                 window.location.reload();
             })
         }
+    }
 
+    const onDiscordToken = (e: ChangeEvent<HTMLInputElement>) => {
+        setToken(e.target.value)
+    }
+
+    const changeDiscordToken = async () => {
+        if (!discordToken) return;
+        const res = await auth.updateDiscordToken(discordToken);
+        if(res?.op === 2) window.location.reload();
     }
 
     return(
@@ -37,6 +47,14 @@ export const Account = () => {
             <input type="text" id="document-id-input"/>
             <button>Change</button>
             <p>Current Document ID: {user?.documentID}</p>
+            <label htmlFor="discord-token-input">Discord Token: </label>
+            <input
+                type="text"
+                placeholder={user?.discordToken ? user?.discordToken : "Enter Discord Token"}
+                id="discord-token-input"
+                onChange={onDiscordToken}
+            />
+            <button onClick={changeDiscordToken}>Change</button>
             <p>{user?.googleAccount.connected ? "Google Account Connected" : "Google Account Unlinked"}</p>
         </div>
     )

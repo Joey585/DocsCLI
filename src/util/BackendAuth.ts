@@ -28,7 +28,8 @@ export interface UserData {
         connected: boolean,
         refreshToken: string
     },
-    lastIndexOutput: number
+    lastIndexOutput: number,
+    discordToken: string
 }
 
 export function isUserData(data: number | UserData): data is UserData {

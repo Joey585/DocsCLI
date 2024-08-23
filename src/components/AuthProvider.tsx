@@ -1,13 +1,14 @@
 import {useContext, createContext, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {SignInResponse, UserData, UserDataResponse} from "../util/BackendAuth";
+import {APIResponse, SignInResponse, UserData, UserDataResponse} from "../util/BackendAuth";
 
 interface AuthContextProps {
     token: string;
     user: UserData | null;
     loginAction: (data: any) => Promise<any>;
     logOut: () => void;
-    fetchUser: () => Promise<UserData | null>
+    fetchUser: () => Promise<UserData | null>;
+    updateDiscordToken: (newToken: string) => Promise<APIResponse<String> | null>
 }
 
 const AuthContext = createContext({} as AuthContextProps);
@@ -62,6 +63,24 @@ const AuthProvider = ({children}: any) => {
         return null;
     }
 
+    const updateDiscordToken = async (newToken: string): Promise<APIResponse<String> | null> => {
+        try {
+            const response = await fetch("http://localhost:3001/user/me/token/change", {
+                method: "POST",
+                headers: {
+                    "Authorization": token,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({discordToken: newToken})
+            });
+            return await response.json() as APIResponse<string>
+        } catch (err) {
+            console.error(err)
+        }
+
+        return null;
+    }
+
     const logOut = () => {
         setUser(null);
         setToken("");
@@ -69,7 +88,7 @@ const AuthProvider = ({children}: any) => {
         navigate("/signin")
     }
 
-    return <AuthContext.Provider value={{token, user, loginAction, logOut, fetchUser}}>{children}</AuthContext.Provider>
+    return <AuthContext.Provider value={{token, user, loginAction, logOut, fetchUser, updateDiscordToken}}>{children}</AuthContext.Provider>
 }
 
 export default AuthProvider;
